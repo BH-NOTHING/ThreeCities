@@ -1,0 +1,74 @@
+<!-- 城市三级联动 vue实现 author:Nothing date:2018-01-28 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>vue三级联动</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"/>
+</head>
+<body>
+	<div id="app">
+		<div style="line-height: 60px;font-size: 18px;">
+			城市选择器
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<select class=" form-control" v-model="proValue" @change="selectPro">
+					<option v-for="item in addrData">{{item.name}}</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<select class=" form-control" v-model="cityValue" @change="selectCity">
+					<option v-for="item in cityData">{{item.name}}</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<select v-model="areaValue" class=" form-control">
+					<option v-for="item in areaData">{{item.name}}</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<!-- 从http://520yaya.vip/js/addr.js获取地址信息,对象名称为addrData -->
+	<script type="text/javascript" src="http://520yaya.vip/js/addr.js"></script>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el : '#app',
+			data : {
+				proValue : '河南省',		//默认省名
+				cityValue : '洛阳市',		//默认市名
+				areaValue : '汝阳县',		//默认区名
+				cityData : [],				
+				areaData : [],
+				isSelectPro : false,
+				isSelectCity : false,
+				addrData : addrData
+			},
+			mounted:function(){
+				this.$nextTick(function(){		//初始化数据
+					this.selectPro();
+					this.selectCity();
+				})
+			},
+			methods:{
+				selectPro(){				
+					vm.cityData = addrData.filter(function(item){
+						return item.name === vm.proValue;
+					})[0].city;
+					vm.cityValue = vm.cityData[0].name;
+					this.selectCity();
+				},
+				selectCity(){
+					vm.areaData =vm.cityData.filter(function(item){
+						return item.name === vm.cityValue;
+					})[0].area;
+					vm.areaValue = vm.areaData[0].name;
+				}
+			}
+		})
+	</script>
+	</body>
+	</html>
